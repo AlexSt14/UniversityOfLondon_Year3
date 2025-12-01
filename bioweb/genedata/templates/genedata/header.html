@@ -1,0 +1,30 @@
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Toy Gene Data Website">
+        <meta name="keywords" content="HTML, gene, genes, advanced web dev">
+        <meta name="author" content="D.Buchan">
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <link rel="stylesheet" type="text/css" href="../static/css/genedata.css">
+        <script type="text/javascript">
+            function exampleFunction() {
+                console.log("This is an example function.");
+            }
+            function changePage() {
+                console.log("Button clicked, changing page...");
+                var h1Elements = document.querySelectorAll("h1");
+                var listPanel = document.getElementById("gene_list");
+                var navLinks = document.getElementsByClassName("nav_link");
+                console.log("List Panel:", listPanel);
+                for (h in h1Elements) {
+                    h1Elements[h].innerHTML = "Oranism Name: D.Bucheria";
+                }
+            }
+        </script>
+    </head>
+    <body>
+

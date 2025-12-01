@@ -1,0 +1,15 @@
+{% load django_bootstrap5 %}
+{% extends "./base.html" %}
+{% block content %}
+        <h1>Filtered list for {{ type }}</h1>
+        <table>
+            <tr>
+                <th>Gene ID</th>
+            </tr>
+            {% for gene in genes %}
+                <tr>
+                    <td><a href="/gene/{{ gene.pk }}">{{ gene }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}
