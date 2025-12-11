@@ -1,12 +1,63 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Cell, Section, TableView } from 'react-native-tableview-simple';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, createContext, useContext } from 'react';
 
-function RestaurantsScreen({ navigation }) {
+const BasketContext = createContext();
 
+const removeItem = (indexToRemove) => {
+  setBasketContent(prev => prev.filter((_, index) => index !== indexToRemove));
+}
+
+function BasketScreen() {
+  const { basketContent, setBasketContent } = useContext(BasketContext);
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView edges={['bottom']}>
+        <ScrollView>
+          <TableView>
+            <Section header='Items in your Basket'>
+              { basketContent.length === 0 ? (
+                <Cell title="Your basket is empty" />
+              ) : (
+                basketContent.map((item, index) => (
+                  <Cell key={index} title={`${item.title} - ${item.content} - ${item.price}`} 
+                    cellStyle='RightDetail' 
+                    detail="Remove"
+                    rightDetailColor="#ac0202ff"
+                    onPress={() => {
+                      const indexToRemove = index;
+                      setBasketContent(prev => prev.filter((_, i) => i !== indexToRemove));
+                    }} 
+                    accessory="DisclosureIndicator"
+                  />
+                ))
+              )}
+            </Section>
+            <Section header='Total to Pay'>
+              <Cell title="Total Amount" 
+                    cellStyle='RightDetail' 
+                    detail={`£${basketContent.reduce((total, item) => {
+                      const priceNumber = parseFloat(item.price.replace('£', ''));
+                      return total + priceNumber;
+                    }, 0).toFixed(2)}`} 
+                    rightDetailColor="#000000ff"
+              />
+            </Section>
+          </TableView>
+        </ScrollView>
+
+      </SafeAreaView>
+    </SafeAreaProvider>
+  )
+}
+
+function RestaurantsScreen({ navigation, route }) {
+
+  const { basketContent, setBasketContent } = useContext(BasketContext);
   const HomescreenCell = (props) => (
     <Cell {...props}
       highlightUnderlayColor={props.highlight}
@@ -28,6 +79,15 @@ function RestaurantsScreen({ navigation }) {
         <ScrollView>
           <TableView>
             <Section header='' hideSeparator={true} sectionTintColor="#ccc">
+              
+              <Cell onPress={() => navigation.navigate("Basket")} 
+                    cellContentView={
+                      <View style={ styles.basketCell }>
+                        <Image style={styles.basketImage} source={require('./images/basket-icon.png')} />
+                        <Text>View Basket ({basketContent.length} items)</Text>
+                      </View>
+                    }
+              />
               <HomescreenCell height={290} 
                               backgroundColor="transparent" 
                               highlight="#a3a3a3ff" 
@@ -65,19 +125,36 @@ function RestaurantsScreen({ navigation }) {
   )
 }
 
-function MenuScreen({ route }) {
+function MenuScreen({ navigation, route }) {
   const { items } = route.params;
+  const { basketContent, setBasketContent } = useContext(BasketContext);
   return (
     <SafeAreaProvider>
       <SafeAreaView edges={['bottom']}>
         <ScrollView>
+          <Cell onPress={() => navigation.navigate("Basket")} 
+                cellContentView={
+                  <View style={ styles.basketCell }>
+                    <Image style={styles.basketImage} source={require('./images/basket-icon.png')} />
+                    <Text>View Basket ({basketContent.length} items)</Text>
+                  </View>
+                }
+          />
           <TableView>
             { items.map((item, i) => (
               <Section key={i} header={item.title}>
                 { item.contents.map((content, j) => (
                   <Cell key={j} title={content.title} 
                         cellStyle='RightDetail' detail={content.price} rightDetailColor="#ac0202ff"
-                        onPress={() => alert(`Added ${item.title} ${content.title} - ${content.price} to basket`)} 
+                        onPress={() => {
+                          setBasketContent([...basketContent, { title: item.title, content: content.title, price: content.price }]);
+                          //This is just to avoid a bug where Alert.alert doesn't work on web
+                          if (Platform.OS === 'web') {
+                            alert(`Added ${item.title} ${content.title} - ${content.price} to basket`);
+                          } else {
+                            Alert.alert("Item Added", `Added ${item.title} ${content.title} - ${content.price} to basket`, [{text: "View Basket", onPress: () => navigation.navigate("Basket")}, { text: "OK"}]);
+                          }
+                        }} 
                         accessory="DisclosureIndicator"
                   />
                 ))}
@@ -94,13 +171,19 @@ function MenuScreen({ route }) {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [basketContent, setBasketContent] = useState([]);
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Restaurants" component={RestaurantsScreen} />
-        <Stack.Screen name="Menu" component={MenuScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>    
+    <BasketContext.Provider value={{ basketContent, setBasketContent }}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Restaurants" component={RestaurantsScreen} />
+          <Stack.Screen name="Menu" component={MenuScreen} />
+          <Stack.Screen name="Basket" component={BasketScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </BasketContext.Provider>
+        
   );
 }
 
@@ -146,9 +229,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   basketCell: {
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center'
   },
   basketImage: {
     width: 25,
