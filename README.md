@@ -12,6 +12,9 @@ Third year of University repository for projects
 - UnitTesting sample App --> [UnitTesting Sample Project showcasing how to use UnitTest in NativeReact](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/UnitTesting)
 - Timers and how to use them --> [Timers Sample Project](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/timers-demo)
 - StopWatch Simple Project --> [StopWatch simple project using Timers](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/HackIt%20StopWatch)
+- AsyncStorage Usage --> [Sample Project using AsyncStorage](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/SaveData)
+- Loading JSON in ReactNative --> [Load JSON Sample Project](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/LoadJSON)
+- Parsing JSON in ReactNative --> [Parsing JSON Sample Project](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/ParsingJSON)- 
 
 
 
