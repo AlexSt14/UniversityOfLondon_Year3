@@ -11,8 +11,7 @@ Third year of University repository for projects
 - FoodApp UI Implementation --> [FoodApp UI with Basket, Menu, and basket logic interaction](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/FoodApp)
 - UnitTesting sample App --> [UnitTesting Sample Project showcasing how to use UnitTest in NativeReact](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/UnitTesting)
 - Timers and how to use them --> [Timers Sample Project](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/timers-demo)
-
-
+- StopWatch Simple Project --> [StopWatch simple project using Timers](https://github.com/AlexSt14/UniversityOfLondon_Year3/tree/main/HackIt%20StopWatch)
 
 
 
